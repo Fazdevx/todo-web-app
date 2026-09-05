@@ -1,0 +1,19 @@
+{
+  "name": "Galileo Agenda - Colegio y Academia",
+  "short_name": "Galileo Agenda",
+  "description": "Gestor de tareas institucional para Colegio y Academia Galileo",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A1428",
+  "theme_color": "#FF5500",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
