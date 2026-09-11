@@ -137,6 +137,7 @@ const OPTIONAL_FALLBACK = [
   'subtasks',
   'description',
   'category',
+  'personal',
 ];
 
 function clampString(value, max) {
@@ -216,6 +217,7 @@ export function taskToJson(t, { patch = false } = {}) {
   set(priorityAttr || 'priority', coerceInt(t.priority, 1));
   set('subtasks', clampString(Array.isArray(t.subtasks) ? t.subtasks.join('\u001F') : (t.subtasks || ''), SCHEMA_MAX.subtasks));
   set('done', Boolean(t.done ?? false));
+  set('personal', Boolean(t.personal ?? false));
   set('createdAt', coerceInt(t.createdAt, Date.now()));
   set('status', clampString(t.status || 'PENDIENTE', SCHEMA_MAX.status));
   set('assignedTo', clampString(t.assignedTo, SCHEMA_MAX.assignedTo));
@@ -275,6 +277,7 @@ export async function docToTask(d) {
     priority: typeof d.priority === 'number' ? d.priority : (typeof d.prority === 'number' ? d.prority : 1),
     subtasks: typeof d.subtasks === 'string' ? d.subtasks.split('\u001F').filter(Boolean) : (Array.isArray(d.subtasks) ? d.subtasks : []),
     done: d.done ?? false,
+    personal: d.personal ?? false,
     createdAt: createdTs,
     dueAt: d.dueAt ?? null,
     status: d.status || (d.done ? 'COMPLETADA' : 'PENDIENTE'),
@@ -298,7 +301,8 @@ export async function loadTasks(userId, isAdmin) {
       queries
     );
     const mapped = await Promise.all(res.documents.map(docToTask));
-    return mapped;
+    // Personal tasks are visible only to their creator, never to admins.
+    return isAdmin ? mapped.filter((t) => !t.personal) : mapped;
   } catch {
     try {
       const queries = [Query.limit(500)];
@@ -308,7 +312,8 @@ export async function loadTasks(userId, isAdmin) {
         queries
       );
       const mapped = await Promise.all(res.documents.map(docToTask));
-      return mapped.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const visible = isAdmin ? mapped.filter((t) => !t.personal) : mapped;
+      return visible.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     } catch (err) {
       console.error('loadTasks failed', err);
       return [];

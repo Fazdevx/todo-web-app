@@ -34,6 +34,7 @@ export function TaskModal() {
   const [category, setCategory] = useState('General');
   const [priority, setPriority] = useState(1);
   const [status, setStatus] = useState('PENDIENTE');
+  const [personal, setPersonal] = useState(false);
   const [dueDate, setDueDate] = useState('');
   const [dueTime, setDueTime] = useState('');
   const [subtasks, setSubtasks] = useState([]);
@@ -55,6 +56,7 @@ export function TaskModal() {
       setSubtasks(editingTask.subtasks || []);
       setAssignedToName(editingTask.assignedToName || user?.name || '');
       setFiles(editingTask.attachments || []);
+      setPersonal(editingTask.personal ?? false);
 
       if (editingTask.dueAt) {
         const d = new Date(editingTask.dueAt);
@@ -81,6 +83,7 @@ export function TaskModal() {
       setSubtasks([]);
       setAssignedToName(user?.name || '');
       setFiles([]);
+      setPersonal(false);
     }
     setError('');
     setUploading(false);
@@ -175,6 +178,7 @@ export function TaskModal() {
       priority,
       status,
       done: status === 'COMPLETADA',
+      personal,
       dueAt,
       subtasks,
       assignedToName: assignedToName.trim() || user?.name,
@@ -345,6 +349,50 @@ export function TaskModal() {
                 <option value="COMPLETADA">Completada</option>
               </select>
             </div>
+          </div>
+
+          {/* Personal task switch */}
+          <div className="flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl border" style={{ 
+            backgroundColor: 'var(--surface-variant)',
+            borderColor: 'var(--outline-variant)',
+            borderWidth: '1px',
+            borderStyle: 'solid'
+          }}>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>Tarea personal</span>
+              <span className="text-[10px] font-medium" style={{ color: 'var(--on-surface-variant)' }}>
+                No será visible para el administrador
+              </span>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={personal}
+              onClick={() => setPersonal(!personal)}
+              title={personal ? 'Visible solo para ti' : 'Visible para el administrador'}
+              style={{
+                width: 44,
+                height: 24,
+                borderRadius: 12,
+                position: 'relative',
+                cursor: 'pointer',
+                border: 'none',
+                backgroundColor: personal ? 'var(--primary)' : 'var(--outline)',
+                transition: 'background-color 0.15s ease'
+              }}
+            >
+              <span style={{
+                position: 'absolute',
+                top: 2,
+                left: personal ? 22 : 2,
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                backgroundColor: '#fff',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                transition: 'left 0.15s ease'
+              }} />
+            </button>
           </div>
 
           {/* Priority Chips */}
