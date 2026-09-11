@@ -5,7 +5,9 @@ import {
   createTask as apiCreateTask,
   updateTask as apiUpdateTask,
   deleteTask as apiDeleteTask,
-  subscribeTasks
+  subscribeTasks,
+  uploadFile,
+  deleteFile,
 } from '../services/appwrite';
 
 const TaskContext = createContext();
@@ -77,6 +79,30 @@ export function TaskProvider({ children }) {
     setTasks((prev) => prev.filter((t) => t.id !== taskId));
   };
 
+  const uploadTaskFile = async (taskId, file, onProgress) => {
+    const uploaded = await uploadFile(file, onProgress);
+    // The task may not be in local state yet (e.g. just created this save),
+    // so fall back to a stub with a valid id instead of crashing.
+    const existing = tasks.find((t) => t.id === taskId);
+    const task = existing || { id: taskId, attachments: [] };
+    const attachments = [...(task.attachments || []), uploaded];
+    const updated = await apiUpdateTask({ ...task, attachments });
+    setTasks((prev) => {
+      const has = prev.some((t) => t.id === updated.id);
+      return has ? prev.map((t) => (t.id === updated.id ? updated : t)) : [updated, ...prev];
+    });
+    return uploaded;
+  };
+
+  const removeTaskFile = async (taskId, fileId) => {
+    await deleteFile(fileId);
+    const existing = tasks.find((t) => t.id === taskId);
+    const task = existing || { id: taskId, attachments: [] };
+    const attachments = (task.attachments || []).filter((a) => a.id !== fileId);
+    const updated = await apiUpdateTask({ ...task, attachments });
+    setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+  };
+
   const toggleTaskDone = async (task) => {
     const newDone = !task.done;
     const updatedTask = {
@@ -131,10 +157,12 @@ export function TaskProvider({ children }) {
         openEditTaskModal,
         closeModal,
         fetchTasks,
-        addTask,
-        editTask,
-        removeTask,
-        toggleTaskDone,
+      addTask,
+      editTask,
+      removeTask,
+      toggleTaskDone,
+      uploadTaskFile,
+      removeTaskFile,
       }}
     >
       {children}

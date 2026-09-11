@@ -40,6 +40,16 @@
 [data-palette="2"] { --primary: #7B1FA2; --on-primary: #fff; }
 [data-palette="3"] { --primary: #E64A19; --on-primary: #fff; }
 [data-palette="4"] { --primary: #C2185B; --on-primary: #fff; }
+[data-palette="5"] { --primary: #B39DDB; --on-primary: #fff; }
+[data-palette="6"] { --primary: #F8BBD0; --on-primary: #4a2c5a; }
+[data-palette="7"] { --primary: #81C784; --on-primary: #fff; }
+[data-palette="8"] { --primary: #64B5F6; --on-primary: #fff; }
+[data-palette="9"] { --primary: #CE93D8; --on-primary: #fff; }
+[data-palette="10"] { --primary: #FFB6C1; --on-primary: #5a2c4a; }
+[data-palette="11"] { --primary: #87CEEB; --on-primary: #2a4a5a; }
+[data-palette="12"] { --primary: #FFC0CB; --on-primary: #5a2c3a; }
+[data-palette="13"] { --primary: #4169E1; --on-primary: #fff; }
+[data-palette="14"] { --primary: #E6E6FA; --on-primary: #3a3a5a; }
 
 [data-density="compact"] { --radius: 10px; }
 
@@ -325,3 +335,13 @@ input, textarea, select { font: inherit; }
 .palette-swatch.p2 { background: #7B1FA2; }
 .palette-swatch.p3 { background: #E64A19; }
 .palette-swatch.p4 { background: #C2185B; }
+.palette-swatch.p5 { background: #B39DDB; }
+.palette-swatch.p6 { background: #F8BBD0; }
+.palette-swatch.p7 { background: #81C784; }
+.palette-swatch.p8 { background: #64B5F6; }
+.palette-swatch.p9 { background: #CE93D8; }
+.palette-swatch.p10 { background: #FFB6C1; }
+.palette-swatch.p11 { background: #87CEEB; }
+.palette-swatch.p12 { background: #FFC0CB; }
+.palette-swatch.p13 { background: #4169E1; }
+.palette-swatch.p14 { background: #E6E6FA; }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import { TaskProvider, useTasks } from './context/TaskContext';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
@@ -16,9 +16,9 @@ function MainContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-orange-500 font-bold text-sm">
+      <div className="min-h-screen flex items-center justify-center font-bold text-sm" style={{ backgroundColor: 'var(--bg)', color: 'var(--primary)' }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }}></div>
           <span>Cargando Agenda Galileo...</span>
         </div>
       </div>
@@ -30,10 +30,14 @@ function MainContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black text-slate-100 font-sans pb-24 md:pb-12">
+    <div className="min-h-screen text-slate-100 font-sans pb-24 md:pb-12 relative" style={{ backgroundColor: 'var(--bg)' }}>
+      <div className="flower-pattern"></div>
+      <div className="flower-decoration flower-decoration-1"></div>
+      <div className="flower-decoration flower-decoration-2"></div>
+      
       <Navbar />
 
-      <main className="animate-in fade-in duration-200">
+      <main className="animate-in fade-in duration-200 relative z-10">
         {activeTab === 'agenda' && <AgendaPage />}
         {activeTab === 'admin' && <AdminDashboard />}
         {activeTab === 'calendar' && <CalendarPage />}
@@ -48,11 +52,9 @@ function MainContent() {
 
 export function App() {
   return (
-    <AuthProvider>
-      <TaskProvider>
-        <MainContent />
-      </TaskProvider>
-    </AuthProvider>
+    <TaskProvider>
+      <MainContent />
+    </TaskProvider>
   );
 }
 

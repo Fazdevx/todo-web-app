@@ -21,7 +21,6 @@ export function CalendarPage() {
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
   const today = () => setCurrentDate(new Date());
 
-  // Map tasks to dates in this month
   const tasksByDay = useMemo(() => {
     const map = {};
     tasks.forEach((t) => {
@@ -41,37 +40,62 @@ export function CalendarPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
+
       {/* Calendar Header */}
-      <div className="glass-panel p-6 rounded-3xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="glass-panel p-6 rounded-3xl border flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderColor: 'var(--outline)' }}>
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
+          <div className="p-3 rounded-2xl border" style={{ 
+            backgroundColor: 'var(--primary)10', 
+            color: 'var(--primary)',
+            borderColor: 'var(--primary)20'
+          }}>
             <CalendarIcon className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--on-surface)' }}>
               {monthNames[month]} {year}
             </h1>
-            <p className="text-xs text-slate-400 font-medium">Calendario de entregas Galileo</p>
+            <p className="text-xs font-medium" style={{ color: 'var(--on-surface-variant)' }}>Calendario de entregas Galileo</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={today}
-            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold transition-all"
+            style={{ 
+              backgroundColor: 'var(--surface-variant)',
+              color: 'var(--on-surface)',
+              borderColor: 'var(--outline)',
+              borderWidth: '1px',
+              borderStyle: 'solid'
+            }}
           >
             Hoy
           </button>
           <button
             onClick={prevMonth}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all"
+            className="p-2 rounded-xl transition-all"
+            style={{ 
+              backgroundColor: 'var(--surface-variant)',
+              color: 'var(--on-surface)',
+              borderColor: 'var(--outline)',
+              borderWidth: '1px',
+              borderStyle: 'solid'
+            }}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={nextMonth}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all"
+            className="p-2 rounded-xl transition-all"
+            style={{ 
+              backgroundColor: 'var(--surface-variant)',
+              color: 'var(--on-surface)',
+              borderColor: 'var(--outline)',
+              borderWidth: '1px',
+              borderStyle: 'solid'
+            }}
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -79,11 +103,11 @@ export function CalendarPage() {
       </div>
 
       {/* Calendar Grid */}
-      <div className="glass-panel rounded-3xl p-4 sm:p-6 border border-slate-800 overflow-x-auto">
+      <div className="glass-panel rounded-3xl p-4 sm:p-6 border overflow-x-auto" style={{ borderColor: 'var(--outline)' }}>
         <div className="min-w-[640px]">
-          
+
           {/* Day Names Header */}
-          <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--on-surface-variant)' }}>
             <div>Dom</div>
             <div>Lun</div>
             <div>Mar</div>
@@ -96,7 +120,10 @@ export function CalendarPage() {
           {/* Days Cells */}
           <div className="grid grid-cols-7 gap-2">
             {emptyDays.map((_, i) => (
-              <div key={`empty-${i}`} className="h-28 rounded-2xl bg-slate-900/20 border border-slate-800/20 opacity-40"></div>
+              <div key={`empty-${i}`} className="h-28 rounded-2xl border opacity-40" style={{ 
+                backgroundColor: 'var(--surface-variant)',
+                borderColor: 'var(--outline-variant)'
+              }}></div>
             ))}
 
             {daysArray.map((day) => {
@@ -111,20 +138,39 @@ export function CalendarPage() {
                   key={day}
                   className={`h-32 p-2 rounded-2xl border transition-all flex flex-col justify-between overflow-hidden ${
                     isToday
-                      ? 'bg-orange-950/30 border-orange-500/50 shadow-lg shadow-orange-500/10'
-                      : 'bg-slate-900/50 border-slate-800/80 hover:border-slate-700'
+                      ? ''
+                      : ''
                   }`}
+                  style={isToday ? { 
+                    backgroundColor: 'var(--primary)08',
+                    borderColor: 'var(--primary)50',
+                    boxShadow: '0 10px 25px -5px var(--primary)30'
+                  } : { 
+                    backgroundColor: 'var(--surface)',
+                    borderColor: 'var(--outline-variant)'
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center ${
-                        isToday ? 'bg-orange-600 text-white shadow-md' : 'text-slate-400'
+                        isToday ? '' : ''
                       }`}
+                      style={isToday ? { 
+                        backgroundColor: 'var(--primary)',
+                        color: 'var(--on-primary)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                      } : { 
+                        color: 'var(--on-surface-variant)'
+                      }}
                     >
                       {day}
                     </span>
                     {dayTasks.length > 0 && (
-                      <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-800 text-orange-400 border border-slate-700">
+                      <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full border" style={{ 
+                        backgroundColor: 'var(--surface-variant)',
+                        color: 'var(--primary)',
+                        borderColor: 'var(--outline)'
+                      }}>
                         {dayTasks.length}
                       </span>
                     )}
@@ -138,11 +184,24 @@ export function CalendarPage() {
                         onClick={() => openEditTaskModal(t)}
                         className={`p-1 px-1.5 rounded-lg text-[10px] font-semibold truncate cursor-pointer transition-transform hover:scale-95 ${
                           t.done
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 line-through'
+                            ? 'border'
                             : t.priority === 3
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                            : 'bg-orange-500/20 text-orange-300 border border-orange-500/30'
+                            ? 'border'
+                            : 'border'
                         }`}
+                        style={t.done ? { 
+                          backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                          color: '#10b981',
+                          borderColor: 'rgba(16, 185, 129, 0.2)'
+                        } : t.priority === 3 ? { 
+                          backgroundColor: 'rgba(244, 63, 94, 0.05)',
+                          color: '#f43f5e',
+                          borderColor: 'rgba(244, 63, 94, 0.2)'
+                        } : { 
+                          backgroundColor: 'var(--primary)10',
+                          color: 'var(--primary)',
+                          borderColor: 'var(--primary)20'
+                        }}
                       >
                         {t.title}
                       </div>

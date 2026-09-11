@@ -2,7 +2,7 @@
 //  screens-settings.js  -  Tema, paleta, densidad, logout
 // =============================================================
 const Settings = (() => {
-    const PALETTES = ['Azul','Verde','Morado','Naranja','Rosa'];
+    const PALETTES = ['Azul','Verde','Morado','Naranja','Rosa','Lavanda Pastel','Rosa Suave','Verde Menta','Azul Cielo','Violeta Flores','Rosa Claro','Azul Suave','Rosa Pastel','Azul Real','Lavanda'];
 
     function render() {
         const theme = localStorage.getItem(CONFIG.KEY_THEME_MODE) || 'system';

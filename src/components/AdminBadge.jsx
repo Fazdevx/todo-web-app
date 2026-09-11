@@ -5,11 +5,15 @@ export function AdminBadge({ assignedToName, createdBy, isAdmin }) {
   const displayName = assignedToName || createdBy || 'Sin asignar';
 
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-300 border border-orange-500/30">
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border" style={{ 
+      backgroundColor: 'var(--primary)10',
+      color: 'var(--primary)',
+      borderColor: 'var(--primary)20'
+    }}>
       {isAdmin ? (
-        <ShieldCheck className="w-3.5 h-3.5 text-orange-400" />
+        <ShieldCheck className="w-3.5 h-3.5" style={{ color: 'var(--primary)' }} />
       ) : (
-        <User className="w-3.5 h-3.5 text-orange-400" />
+        <User className="w-3.5 h-3.5" style={{ color: 'var(--primary)' }} />
       )}
       <span className="truncate max-w-[120px]">{displayName}</span>
     </span>
