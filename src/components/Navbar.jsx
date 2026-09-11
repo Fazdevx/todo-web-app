@@ -43,13 +43,14 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-2xl border" style={{ 
+          {/* Navigation Links: visible from md (tablets) up; text only at lg+ */}
+          <nav className="hidden md:flex items-center gap-1.5 p-1.5 rounded-2xl border" style={{ 
             backgroundColor: 'var(--surface-variant)', 
             borderColor: 'var(--outline)' 
           }}>
             <button
               onClick={() => setActiveTab('agenda')}
+              title="Agenda"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                 activeTab === 'agenda'
                   ? 'text-white shadow-lg'
@@ -76,12 +77,13 @@ export function Navbar() {
               }}
             >
               <ClipboardList className="w-4 h-4" />
-              Agenda
+              <span className="hidden lg:inline">Agenda</span>
             </button>
 
             {isAdmin && (
               <button
                 onClick={() => setActiveTab('admin')}
+                title="Panel Admin"
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                   activeTab === 'admin'
                     ? 'text-white shadow-lg'
@@ -108,12 +110,13 @@ export function Navbar() {
                 }}
               >
                 <LayoutDashboard className="w-4 h-4" />
-                Panel Admin
+                <span className="hidden lg:inline">Panel Admin</span>
               </button>
             )}
 
             <button
               onClick={() => setActiveTab('calendar')}
+              title="Calendario"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                 activeTab === 'calendar'
                   ? 'text-white shadow-lg'
@@ -140,11 +143,12 @@ export function Navbar() {
               }}
             >
               <Calendar className="w-4 h-4" />
-              Calendario
+              <span className="hidden lg:inline">Calendario</span>
             </button>
 
             <button
               onClick={() => setActiveTab('settings')}
+              title="Ajustes"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                 activeTab === 'settings'
                   ? 'text-white shadow-lg'
@@ -171,7 +175,7 @@ export function Navbar() {
               }}
             >
               <Settings className="w-4 h-4" />
-              Ajustes
+              <span className="hidden lg:inline">Ajustes</span>
             </button>
           </nav>
 
@@ -187,7 +191,7 @@ export function Navbar() {
               }}>
                 {user?.name ? user.name.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
               </div>
-              <span className="text-sm font-semibold hidden sm:inline max-w-[130px] truncate" style={{ color: 'var(--on-surface)' }}>
+              <span className="text-sm font-semibold hidden lg:inline max-w-[130px] truncate" style={{ color: 'var(--on-surface)' }}>
                 {user?.name}
               </span>
             </div>
