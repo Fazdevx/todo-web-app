@@ -86,6 +86,8 @@ $listener.Start()
 - [x] Crear / editar tareas (titulo, descripcion, categoria, prioridad, fecha+hora, recordatorio, puntos)
 - [x] Marcar como hecha / borrar
 - [x] Vista calendario mensual
+- [x] Planificador diario con las 5 secciones de la hoja impresa del colegio
+      (FECHA, 3 PRIORIDADES, METAS DEL DÍA, ¿CUÁL ES TU HORARIO HOY?, IDEAS / PENDIENTES / PREOCUPACIONES)
 - [x] Pantalla de ajustes: tema claro/oscuro/sistema, 5 paletas, densidad
 - [x] Realtime: cambios en tareas se reflejan automaticamente
 - [x] Responsive (mobile-first)
@@ -97,6 +99,41 @@ $listener.Start()
 - Notificaciones push (requiere VAPID keys + service worker push API, mas complejo)
 - Calendario con drag & drop
 - Widget de escritorio
+
+## Planificador diario (secciones derivadas de la hoja impresa)
+
+La hoja escaneada del colegio (`Documento escaneado 13.pdf`) divide el día en cinco
+bloques: **FECHA**, **3 PRIORIDADES**, **METAS DEL DÍA**, **¿CUÁL ES TU HORARIO HOY?**
+(05:00 → 22:00) e **IDEAS / PENDIENTES / PREOCUPACIONES**.
+
+La pestaña **Planificador** del frontend muestra esos mismos bloques y clasifica las
+tareas que ya existen **sin cambiar la base de datos**: no se agregan atributos ni
+collections, la vista solo lee los campos que ya hay en Appwrite.
+
+| Sección de la hoja | De dónde sale |
+| --- | --- |
+| FECHA | El día elegido en el navegador de días + avance de tareas cumplidas |
+| 3 PRIORIDADES | Las 3 tareas pendientes del día con `priority` más alta (a igual prioridad, la hora más temprana) |
+| METAS DEL DÍA | El resto de tareas programadas para ese día (primero pendientes, luego cumplidas) |
+| ¿CUÁL ES TU HORARIO HOY? | Cada tarea ubicada en la fila de la hora de su `dueAt` (05:00–22:00) |
+| IDEAS / PENDIENTES / PREOCUPACIONES | Notas escritas en la hoja (localStorage, por día y por usuario) + tareas pendientes sin `dueAt` |
+
+Reglas de clasificación:
+
+- Una tarea con `dueAt` del día aparece en **3 PRIORIDADES** si está entre las 3 de
+  mayor `priority`; si no, aparece en **METAS DEL DÍA**.
+- Las tareas con hora fuera de 05:00–22:00 se listan aparte dentro del horario
+  ("Fuera del horario impreso").
+- Las tareas sin `dueAt` viven en **IDEAS / PENDIENTES / PREOCUPACIONES** hasta que se
+  les asigne fecha (o se conviertan con un clic desde una nota de la hoja).
+- Las pendientes de días anteriores se avisan arriba, con acceso directo al filtro
+  **Vencidas** de la Agenda: no se mezclan con el día que se está planificando.
+
+Código:
+
+- `src/utils/planner.js` — `buildDayPlan()` hace toda la clasificación (función pura).
+- `src/utils/plannerNotes.js` — notas del bloque IDEAS en `localStorage`.
+- `src/pages/PlannerPage.jsx` — la pantalla del Planificador.
 
 ## Requisitos de la DB en Appwrite
 

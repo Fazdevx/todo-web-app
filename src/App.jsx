@@ -6,6 +6,7 @@ import { BottomNav } from './components/BottomNav';
 import { TaskModal } from './components/TaskModal';
 import { AuthPage } from './pages/AuthPage';
 import { AgendaPage } from './pages/AgendaPage';
+import { PlannerPage } from './pages/PlannerPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { CalendarPage } from './pages/CalendarPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -39,6 +40,7 @@ function MainContent() {
 
       <main className="animate-in fade-in duration-200 relative z-10">
         {activeTab === 'agenda' && <AgendaPage />}
+        {activeTab === 'planner' && <PlannerPage />}
         {activeTab === 'admin' && <AdminDashboard />}
         {activeTab === 'calendar' && <CalendarPage />}
         {activeTab === 'settings' && <SettingsPage />}

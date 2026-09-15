@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTasks } from '../context/TaskContext';
 import { useAuth } from '../context/AuthContext';
 import { X, Plus, Trash2, Calendar, Tag, Flag, User, CheckCircle2, Paperclip, Image as ImageIcon, FileText, Upload, XCircle, Download } from 'lucide-react';
+import { dateToInputValue, timeToInputValue } from '../utils/planner';
 
 const CATEGORIES = ['General', 'Academia', 'Docencia', 'Administración', 'Trabajo', 'Personal'];
 const PRIORITIES = [
@@ -26,7 +27,7 @@ function getFileIcon(mimeType) {
 }
 
 export function TaskModal() {
-  const { isModalOpen, closeModal, editingTask, addTask, editTask, uploadTaskFile, removeTaskFile } = useTasks();
+  const { isModalOpen, closeModal, editingTask, draftDefaults, addTask, editTask, uploadTaskFile, removeTaskFile } = useTasks();
   const { user } = useAuth();
 
   const [title, setTitle] = useState('');
@@ -73,22 +74,31 @@ export function TaskModal() {
         setDueTime('');
       }
     } else {
-      setTitle('');
+      // Modo "crear": los valores por defecto llegan del Planificador
+      // (seccion 3 PRIORIDADES / METAS / HORARIO / IDEAS de la hoja impresa).
+      const defaults = draftDefaults || {};
+      setTitle(defaults.title || '');
       setDescription('');
-      setCategory('General');
-      setPriority(1);
+      setCategory(defaults.category || 'General');
+      setPriority(defaults.priority ?? 1);
       setStatus('PENDIENTE');
-      setDueDate('');
-      setDueTime('');
+      setPersonal(defaults.personal ?? false);
       setSubtasks([]);
       setAssignedToName(user?.name || '');
       setFiles([]);
-      setPersonal(false);
+
+      if (defaults.dueAt) {
+        setDueDate(dateToInputValue(defaults.dueAt));
+        setDueTime(timeToInputValue(defaults.dueAt));
+      } else {
+        setDueDate('');
+        setDueTime('');
+      }
     }
     setError('');
     setUploading(false);
     setUploadProgress({});
-  }, [editingTask, isModalOpen, user]);
+  }, [editingTask, isModalOpen, user, draftDefaults]);
 
   if (!isModalOpen) return null;
 

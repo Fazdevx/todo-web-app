@@ -23,6 +23,10 @@ export function TaskProvider({ children }) {
   const [activeTab, setActiveTab] = useState('agenda');
   const [editingTask, setEditingTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Valores con los que se abre el modal en modo "crear" (los usa el
+  // Planificador para precargar la fecha/hora/prioridad de cada seccion de la
+  // hoja impresa: 3 prioridades, metas, horario, ideas).
+  const [draftDefaults, setDraftDefaults] = useState(null);
 
   const fetchTasks = useCallback(async () => {
     if (!user) return;
@@ -121,18 +125,29 @@ export function TaskProvider({ children }) {
     }
   };
 
-  const openNewTaskModal = () => {
+  // `onClick={openNewTaskModal}` tambien llega con el evento de React como
+  // argumento, asi que solo aceptamos objetos planos como valores por defecto.
+  const sanitizeDefaults = (defaults) => {
+    if (!defaults || typeof defaults !== 'object') return null;
+    if (defaults.nativeEvent || defaults.target) return null; // evento de React
+    return defaults;
+  };
+
+  const openNewTaskModal = (defaults = null) => {
     setEditingTask(null);
+    setDraftDefaults(sanitizeDefaults(defaults));
     setIsModalOpen(true);
   };
 
   const openEditTaskModal = (task) => {
     setEditingTask(task);
+    setDraftDefaults(null);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setEditingTask(null);
+    setDraftDefaults(null);
     setIsModalOpen(false);
   };
 
@@ -153,6 +168,7 @@ export function TaskProvider({ children }) {
         setActiveTab,
         editingTask,
         isModalOpen,
+        draftDefaults,
         openNewTaskModal,
         openEditTaskModal,
         closeModal,

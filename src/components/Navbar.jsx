@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TaskContext';
 import {
   ClipboardList,
+  CalendarClock,
   ShieldCheck,
   Calendar,
   Settings,
@@ -78,6 +79,40 @@ export function Navbar() {
             >
               <ClipboardList className="w-4 h-4" />
               <span className="hidden lg:inline">Agenda</span>
+            </button>
+
+            {/* Planificador: las 5 secciones de la hoja diaria (FECHA, 3
+                PRIORIDADES, METAS, HORARIO, IDEAS) derivadas de las tareas */}
+            <button
+              onClick={() => setActiveTab('planner')}
+              title="Planificador"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                activeTab === 'planner'
+                  ? 'text-white shadow-lg'
+                  : ''
+              }`}
+              style={activeTab === 'planner' ? {
+                background: 'var(--primary)',
+                boxShadow: `0 10px 25px -5px var(--primary)40`
+              } : {
+                color: 'var(--on-surface-variant)',
+                backgroundColor: 'transparent'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== 'planner') {
+                  e.target.style.backgroundColor = 'var(--surface-variant)';
+                  e.target.style.color = 'var(--on-surface)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== 'planner') {
+                  e.target.style.backgroundColor = 'transparent';
+                  e.target.style.color = 'var(--on-surface-variant)';
+                }
+              }}
+            >
+              <CalendarClock className="w-4 h-4" />
+              <span className="hidden lg:inline">Planificador</span>
             </button>
 
             {isAdmin && (
