@@ -4,6 +4,7 @@ import { TaskProvider, useTasks } from './context/TaskContext';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
 import { TaskModal } from './components/TaskModal';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthPage } from './pages/AuthPage';
 import { AgendaPage } from './pages/AgendaPage';
 import { PlannerPage } from './pages/PlannerPage';
@@ -17,10 +18,11 @@ function MainContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center font-bold text-sm" style={{ backgroundColor: 'var(--bg)', color: 'var(--primary)' }}>
-        <div className="flex flex-col items-center gap-3">
+      <div className="app-board min-h-screen flex items-center justify-center font-bold text-sm">
+        <div className="board-chalk-texture" aria-hidden="true"></div>
+        <div className="relative z-10 flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }}></div>
-          <span>Cargando Agenda Galileo...</span>
+          <span style={{ color: 'var(--on-surface)' }}>Cargando Agenda Galileo...</span>
         </div>
       </div>
     );
@@ -31,7 +33,9 @@ function MainContent() {
   }
 
   return (
-    <div className="min-h-screen text-slate-100 font-sans pb-24 md:pb-12 relative" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="app-board min-h-screen text-slate-100 font-sans pb-24 md:pb-12 relative">
+      <div className="board-chalk-texture" aria-hidden="true"></div>
+      <div className="board-chalk-strokes" aria-hidden="true"></div>
       <div className="flower-pattern"></div>
       <div className="flower-decoration flower-decoration-1"></div>
       <div className="flower-decoration flower-decoration-2"></div>
@@ -39,11 +43,15 @@ function MainContent() {
       <Navbar />
 
       <main className="animate-in fade-in duration-200 relative z-10">
-        {activeTab === 'agenda' && <AgendaPage />}
-        {activeTab === 'planner' && <PlannerPage />}
-        {activeTab === 'admin' && <AdminDashboard />}
-        {activeTab === 'calendar' && <CalendarPage />}
-        {activeTab === 'settings' && <SettingsPage />}
+        {/* `key={activeTab}`: si una pantalla falla, cambiar de sección
+            reinicia el error en vez de dejar toda la app bloqueada. */}
+        <ErrorBoundary key={activeTab}>
+          {activeTab === 'agenda' && <AgendaPage />}
+          {activeTab === 'planner' && <PlannerPage />}
+          {activeTab === 'admin' && <AdminDashboard />}
+          {activeTab === 'calendar' && <CalendarPage />}
+          {activeTab === 'settings' && <SettingsPage />}
+        </ErrorBoundary>
       </main>
 
       <TaskModal />
@@ -54,9 +62,11 @@ function MainContent() {
 
 export function App() {
   return (
-    <TaskProvider>
-      <MainContent />
-    </TaskProvider>
+    <ErrorBoundary>
+      <TaskProvider>
+        <MainContent />
+      </TaskProvider>
+    </ErrorBoundary>
   );
 }
 

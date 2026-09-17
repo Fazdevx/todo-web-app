@@ -33,8 +33,9 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="w-full max-w-md">
+    <div className="app-board min-h-screen flex items-center justify-center p-4">
+      <div className="board-chalk-texture" aria-hidden="true"></div>
+      <div className="w-full max-w-md relative z-10">
 
         {/* Galileo Brand Header */}
         <div className="text-center mb-8">

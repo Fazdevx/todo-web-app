@@ -222,3 +222,598 @@
 [data-palette] .btn-gradient:hover {
   background: linear-gradient(135deg, var(--primary)cc, var(--primary));
 }
+
+/* ==========================================================
+   DISEÑO "PIZARRA CON HOJAS DE APUNTES"
+   Fondo tipo pizarrón + tarjetas tipo hoja de cuaderno y
+   colores pastel. Se redefinen las variables dentro de
+   .app-board y .notebook-paper para que los componentes que ya
+   usan var(--surface), var(--on-surface), var(--outline), etc.
+   sigan legibles sin tener que reescribir cada pantalla.
+   ========================================================== */
+
+.app-board {
+  position: relative;
+  --font-hand: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
+
+  /* ---- Tono de fondo por defecto: pizarra verde ----
+     Cada tono (ver Ajustes > Fondo de la pizarra) redefine estas
+     variables en [data-board="..."], asi el mismo marcado funciona
+     con fondos oscuros (tiza clara) y pastel (tinta oscura). */
+  --board-bg-color: #22332a;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.08), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.05), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(0, 0, 0, 0.38), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(0, 0, 0, 0.30), transparent 48%),
+    linear-gradient(155deg, #35493d 0%, #253830 45%, #1a2921 100%);
+  --board-ink: #eef4f0;
+  --board-ink-soft: rgba(238, 244, 240, 0.72);
+  --board-line: rgba(238, 244, 240, 0.32);
+  --board-line-soft: rgba(238, 244, 240, 0.22);
+  --board-line-faint: rgba(238, 244, 240, 0.14);
+  --board-surface: rgba(255, 255, 255, 0.08);
+  --board-surface-variant: rgba(255, 255, 255, 0.13);
+  --board-panel: #2c4136;
+  --board-bar: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)), #2c4136;
+  --board-bar-b: linear-gradient(0deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)), #2c4136;
+  --board-primary: var(--chalk-accent, #8ecbff);
+  --board-on-primary: #14261e;
+  --board-texture-blend: soft-light;
+  --board-texture-opacity: 0.35;
+  --board-stroke: #ffffff;
+  --board-glow: 0 0 8px rgba(255, 255, 255, 0.18);
+  --board-inset: inset 0 0 46px rgba(0, 0, 0, 0.20);
+  --board-shadow-color: rgba(0, 0, 0, 0.55);
+
+  /* Puente: las variables que ya usan todos los componentes */
+  --on-surface: var(--board-ink);
+  --on-surface-variant: var(--board-ink-soft);
+  --outline: var(--board-line-soft);
+  --outline-variant: var(--board-line-faint);
+  --surface: var(--board-surface);
+  --surface-variant: var(--board-surface-variant);
+  --primary: var(--board-primary);
+  --on-primary: var(--board-on-primary);
+
+  color: var(--on-surface);
+  background-color: var(--board-bg-color);
+  background-image: var(--board-bg);
+  transition: background-color 0.25s ease;
+}
+
+/* ==========================================================
+   FONDOS PASTEL (elegibles en Ajustes > Fondo de la pizarra)
+   ========================================================== */
+
+[data-board="menta"] .app-board,
+.app-board[data-board="menta"] {
+  --board-bg-color: #dff3e8;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.85), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.60), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(104, 176, 142, 0.28), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(104, 176, 142, 0.20), transparent 48%),
+    linear-gradient(155deg, #effbf5 0%, #dcf4e8 45%, #c9ecdc 100%);
+  --board-ink: #2c4a3c;
+  --board-ink-soft: rgba(44, 74, 60, 0.76);
+  --board-line: rgba(44, 74, 60, 0.40);
+  --board-line-soft: rgba(44, 74, 60, 0.26);
+  --board-line-faint: rgba(44, 74, 60, 0.15);
+  --board-surface: rgba(255, 255, 255, 0.55);
+  --board-surface-variant: rgba(255, 255, 255, 0.75);
+  --board-panel: #f3fcf7;
+  --board-bar: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.72)), #eefaf3;
+  --board-bar-b: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0.72)), #eefaf3;
+  --board-primary: var(--ink-accent, #17569b);
+  --board-on-primary: #ffffff;
+  --board-texture-blend: multiply;
+  --board-texture-opacity: 0.06;
+  --board-stroke: rgba(44, 74, 60, 0.75);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.65);
+  --board-inset: inset 0 0 60px rgba(104, 176, 142, 0.14);
+  --board-shadow-color: rgba(44, 74, 60, 0.40);
+}
+
+[data-board="cielo"] .app-board,
+.app-board[data-board="cielo"] {
+  --board-bg-color: #e6f2fe;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.90), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.65), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(110, 150, 200, 0.26), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(110, 150, 200, 0.18), transparent 48%),
+    linear-gradient(155deg, #f4faff 0%, #e2f0fd 45%, #cfe5f9 100%);
+  --board-ink: #2b4256;
+  --board-ink-soft: rgba(43, 66, 86, 0.76);
+  --board-line: rgba(43, 66, 86, 0.40);
+  --board-line-soft: rgba(43, 66, 86, 0.26);
+  --board-line-faint: rgba(43, 66, 86, 0.15);
+  --board-surface: rgba(255, 255, 255, 0.55);
+  --board-surface-variant: rgba(255, 255, 255, 0.75);
+  --board-panel: #f4faff;
+  --board-bar: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.72)), #eaf4fe;
+  --board-bar-b: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0.72)), #eaf4fe;
+  --board-primary: var(--ink-accent, #17569b);
+  --board-on-primary: #ffffff;
+  --board-texture-blend: multiply;
+  --board-texture-opacity: 0.06;
+  --board-stroke: rgba(43, 66, 86, 0.75);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.65);
+  --board-inset: inset 0 0 60px rgba(110, 150, 200, 0.14);
+  --board-shadow-color: rgba(43, 66, 86, 0.40);
+}
+
+[data-board="lavanda"] .app-board,
+.app-board[data-board="lavanda"] {
+  --board-bg-color: #efe9ff;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.90), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.65), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(128, 110, 190, 0.24), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(128, 110, 190, 0.16), transparent 48%),
+    linear-gradient(155deg, #f8f5ff 0%, #ece4fd 45%, #ddd1f6 100%);
+  --board-ink: #3f3559;
+  --board-ink-soft: rgba(63, 53, 89, 0.76);
+  --board-line: rgba(63, 53, 89, 0.40);
+  --board-line-soft: rgba(63, 53, 89, 0.26);
+  --board-line-faint: rgba(63, 53, 89, 0.15);
+  --board-surface: rgba(255, 255, 255, 0.55);
+  --board-surface-variant: rgba(255, 255, 255, 0.75);
+  --board-panel: #f8f5ff;
+  --board-bar: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.72)), #f1ebff;
+  --board-bar-b: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0.72)), #f1ebff;
+  --board-primary: var(--ink-accent, #17569b);
+  --board-on-primary: #ffffff;
+  --board-texture-blend: multiply;
+  --board-texture-opacity: 0.06;
+  --board-stroke: rgba(63, 53, 89, 0.75);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.65);
+  --board-inset: inset 0 0 60px rgba(128, 110, 190, 0.14);
+  --board-shadow-color: rgba(63, 53, 89, 0.40);
+}
+
+[data-board="rosa"] .app-board,
+.app-board[data-board="rosa"] {
+  --board-bg-color: #ffeaf2;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.92), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.68), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(214, 120, 160, 0.26), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(214, 120, 160, 0.18), transparent 48%),
+    linear-gradient(155deg, #fff6fa 0%, #ffe4ee 45%, #fbd0e0 100%);
+  --board-ink: #573044;
+  --board-ink-soft: rgba(87, 48, 68, 0.76);
+  --board-line: rgba(87, 48, 68, 0.40);
+  --board-line-soft: rgba(87, 48, 68, 0.26);
+  --board-line-faint: rgba(87, 48, 68, 0.15);
+  --board-surface: rgba(255, 255, 255, 0.58);
+  --board-surface-variant: rgba(255, 255, 255, 0.78);
+  --board-panel: #fff7fb;
+  --board-bar: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.72)), #ffeff5;
+  --board-bar-b: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0.72)), #ffeff5;
+  --board-primary: var(--ink-accent, #17569b);
+  --board-on-primary: #ffffff;
+  --board-texture-blend: multiply;
+  --board-texture-opacity: 0.06;
+  --board-stroke: rgba(87, 48, 68, 0.75);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.70);
+  --board-inset: inset 0 0 60px rgba(214, 120, 160, 0.14);
+  --board-shadow-color: rgba(87, 48, 68, 0.40);
+}
+
+[data-board="durazno"] .app-board,
+.app-board[data-board="durazno"] {
+  --board-bg-color: #fff0e2;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.92), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.68), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(224, 150, 100, 0.24), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(224, 150, 100, 0.16), transparent 48%),
+    linear-gradient(155deg, #fff8f1 0%, #ffe9d6 45%, #fbd8ba 100%);
+  --board-ink: #5a3a22;
+  --board-ink-soft: rgba(90, 58, 34, 0.76);
+  --board-line: rgba(90, 58, 34, 0.40);
+  --board-line-soft: rgba(90, 58, 34, 0.26);
+  --board-line-faint: rgba(90, 58, 34, 0.15);
+  --board-surface: rgba(255, 255, 255, 0.58);
+  --board-surface-variant: rgba(255, 255, 255, 0.78);
+  --board-panel: #fff9f3;
+  --board-bar: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.72)), #fff4ea;
+  --board-bar-b: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0.72)), #fff4ea;
+  --board-primary: var(--ink-accent, #17569b);
+  --board-on-primary: #ffffff;
+  --board-texture-blend: multiply;
+  --board-texture-opacity: 0.06;
+  --board-stroke: rgba(90, 58, 34, 0.75);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.70);
+  --board-inset: inset 0 0 60px rgba(224, 150, 100, 0.14);
+  --board-shadow-color: rgba(90, 58, 34, 0.40);
+}
+
+[data-board="crema"] .app-board,
+.app-board[data-board="crema"] {
+  --board-bg-color: #fdf6d9;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.92), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.68), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(196, 168, 88, 0.22), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(196, 168, 88, 0.16), transparent 48%),
+    linear-gradient(155deg, #fffdf3 0%, #fdf3cf 45%, #f4e6ae 100%);
+  --board-ink: #4f4526;
+  --board-ink-soft: rgba(79, 69, 38, 0.76);
+  --board-line: rgba(79, 69, 38, 0.40);
+  --board-line-soft: rgba(79, 69, 38, 0.26);
+  --board-line-faint: rgba(79, 69, 38, 0.15);
+  --board-surface: rgba(255, 255, 255, 0.58);
+  --board-surface-variant: rgba(255, 255, 255, 0.78);
+  --board-panel: #fffdf5;
+  --board-bar: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.72)), #fffbe8;
+  --board-bar-b: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0.72)), #fffbe8;
+  --board-primary: var(--ink-accent, #17569b);
+  --board-on-primary: #ffffff;
+  --board-texture-blend: multiply;
+  --board-texture-opacity: 0.07;
+  --board-stroke: rgba(79, 69, 38, 0.70);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.70);
+  --board-inset: inset 0 0 60px rgba(196, 168, 88, 0.14);
+  --board-shadow-color: rgba(79, 69, 38, 0.38);
+}
+
+[data-board="perla"] .app-board,
+.app-board[data-board="perla"] {
+  --board-bg-color: #eef1f5;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.92), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.68), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(120, 134, 152, 0.24), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(120, 134, 152, 0.16), transparent 48%),
+    linear-gradient(155deg, #fafbfd 0%, #eceff4 45%, #dde3ea 100%);
+  --board-ink: #353b44;
+  --board-ink-soft: rgba(53, 59, 68, 0.76);
+  --board-line: rgba(53, 59, 68, 0.40);
+  --board-line-soft: rgba(53, 59, 68, 0.26);
+  --board-line-faint: rgba(53, 59, 68, 0.15);
+  --board-surface: rgba(255, 255, 255, 0.60);
+  --board-surface-variant: rgba(255, 255, 255, 0.80);
+  --board-panel: #fbfcfd;
+  --board-bar: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.72)), #f4f6f9;
+  --board-bar-b: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0.72)), #f4f6f9;
+  --board-primary: var(--ink-accent, #17569b);
+  --board-on-primary: #ffffff;
+  --board-texture-blend: multiply;
+  --board-texture-opacity: 0.07;
+  --board-stroke: rgba(53, 59, 68, 0.70);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.70);
+  --board-inset: inset 0 0 60px rgba(120, 134, 152, 0.14);
+  --board-shadow-color: rgba(53, 59, 68, 0.38);
+}
+
+/* Pizarra Verde (agregado para compatibilidad con BOARDS) */
+[data-board="verde"] .app-board,
+.app-board[data-board="verde"] {
+  --board-bg-color: #1a2921;
+  --board-bg:
+    radial-gradient(ellipse at 16% 10%, rgba(255, 255, 255, 0.08), transparent 45%),
+    radial-gradient(ellipse at 86% 4%, rgba(255, 255, 255, 0.04), transparent 38%),
+    radial-gradient(ellipse at 62% 94%, rgba(0, 0, 0, 0.24), transparent 55%),
+    radial-gradient(ellipse at 4% 82%, rgba(0, 0, 0, 0.16), transparent 48%),
+    linear-gradient(155deg, #35493d 0%, #2a3a30 45%, #1a2921 100%);
+  --board-ink: #eef1f5;
+  --board-ink-soft: rgba(238, 241, 245, 0.76);
+  --board-line: rgba(238, 241, 245, 0.40);
+  --board-line-soft: rgba(238, 241, 245, 0.26);
+  --board-line-faint: rgba(238, 241, 245, 0.15);
+  --board-surface: rgba(0, 0, 0, 0.25);
+  --board-surface-variant: rgba(0, 0, 0, 0.15);
+  --board-panel: #2a3a30;
+  --board-bar: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1)), #1a2921;
+  --board-bar-b: linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1)), #1a2921;
+  --board-primary: var(--chalk-accent, #8ecbff);
+  --board-on-primary: #1a2921;
+  --board-texture-blend: screen;
+  --board-texture-opacity: 0.05;
+  --board-stroke: rgba(238, 241, 245, 0.30);
+  --board-glow: 0 0 10px rgba(255, 255, 255, 0.15);
+  --board-inset: inset 0 0 60px rgba(0, 0, 0, 0.20);
+  --board-shadow-color: rgba(0, 0, 0, 0.40);
+}
+
+/* Paneles de vidrio del tema anterior -> pizarra sólida (encabezado,
+   ajustes, estados vacíos) manteniendo el marco translúcido en las
+   secciones tipo "hoja" (Planificador, Calendario). */
+.app-board .glass-panel {
+  background: var(--board-panel);
+  border-color: var(--board-line-faint);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--on-surface);
+}
+
+.app-board .glass-card {
+  background: var(--board-surface);
+  border-color: var(--board-line-faint);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--on-surface);
+}
+
+.app-board .glass-card:hover {
+  background: var(--board-surface-variant);
+  border-color: var(--primary);
+}
+
+/* Los botones con color de marca llevan el texto de contraste del tono */
+.app-board .text-white {
+  color: var(--on-primary);
+}
+
+/* Barra de navegación superior: bandeja destacada del fondo */
+.app-board .board-topbar {
+  background: var(--board-bar);
+  border-bottom: 2px dashed var(--board-line);
+  box-shadow: 0 16px 32px -22px var(--board-shadow-color);
+}
+
+/* Barra de navegación inferior (móvil) */
+.app-board .board-bottombar {
+  background: var(--board-bar-b);
+  border-top: 2px dashed var(--board-line);
+  box-shadow: 0 -16px 32px -22px var(--board-shadow-color);
+}
+
+/* Polvo de tiza sobre la pizarra */
+.board-chalk-texture {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--board-texture-opacity, 0.35);
+  mix-blend-mode: var(--board-texture-blend, soft-light);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='chalk'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23chalk)'/></svg>");
+}
+
+/* Trazos sueltos de tiza (decorativos) */
+.board-chalk-strokes {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.10;
+  background-image:
+    linear-gradient(72deg, transparent 46.8%, var(--board-stroke, #ffffff) 47.2%, var(--board-stroke, #ffffff) 47.8%, transparent 48.2%),
+    linear-gradient(-64deg, transparent 69.5%, var(--board-stroke, #ffffff) 69.9%, var(--board-stroke, #ffffff) 70.4%, transparent 70.8%),
+    linear-gradient(12deg, transparent 30.4%, var(--board-stroke, #ffffff) 30.8%, var(--board-stroke, #ffffff) 31.2%, transparent 31.6%);
+  background-repeat: no-repeat;
+  background-size: 460px 320px, 620px 480px, 320px 260px;
+  background-position: 4% 14%, 96% 82%, 72% 22%;
+}
+
+/* Columna de pizarra: marco dibujado con tiza */
+.chalk-panel {
+  position: relative;
+  border: 1.5px dashed var(--board-line-soft);
+  border-radius: 26px;
+  background: var(--board-surface);
+  box-shadow: var(--board-inset);
+}
+
+.chalk-panel-header {
+  border-bottom: 1.5px dashed var(--board-line-faint);
+}
+
+.chalk-title {
+  font-family: var(--font-hand, 'Caveat', 'Segoe Script', cursive);
+  font-weight: 700;
+  font-size: 1.6rem;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-shadow: var(--board-glow);
+}
+
+.chalk-text {
+  font-family: var(--font-hand, 'Caveat', 'Segoe Script', cursive);
+  font-weight: 600;
+}
+
+/* Botón/pastilla dibujada con tiza */
+.chalk-pill {
+  border: 1.5px dashed var(--board-line);
+  border-radius: 9999px;
+  background: var(--board-surface);
+}
+
+/* ==========================================================
+   HOJA DE APUNTES (tarjeta de tarea y hojas de sección)
+   Renglones azules + margen rojo. La tarjeta agrega además
+   perforaciones y cinta adhesiva.
+   ========================================================== */
+
+.notebook-paper,
+.notebook-plain {
+  position: relative;
+  /* Tinta sobre el papel */
+  --paper-ink: #2f3542;
+  --paper-ink-soft: #5f6879;
+
+  --on-surface: var(--paper-ink);
+  --on-surface-variant: var(--paper-ink-soft);
+  --outline: rgba(47, 53, 66, 0.18);
+  --outline-variant: rgba(47, 53, 66, 0.10);
+  --surface: rgba(255, 255, 255, 0.55);
+  --surface-variant: rgba(47, 53, 66, 0.07);
+
+  /* Papel pastel (por defecto: amarillo suave) */
+  --paper-bg: #fffbe9;
+  --paper-tint-a: rgba(255, 235, 156, 0.50);
+  --paper-tint-b: rgba(255, 252, 240, 0.92);
+  --paper-line: rgba(96, 140, 190, 0.30);
+  --paper-margin: rgba(226, 118, 134, 0.55);
+  --paper-accent: #d9a72c;
+
+  color: var(--on-surface);
+  background-color: var(--paper-bg);
+  background-image:
+    linear-gradient(135deg, var(--paper-tint-a), var(--paper-tint-b)),
+    repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0) 0 27px, var(--paper-line) 27px 28px),
+    linear-gradient(90deg, var(--paper-margin) 0 2px, rgba(255, 255, 255, 0) 2px);
+  background-repeat: no-repeat, repeat, no-repeat;
+  background-size: 100% 100%, 100% 28px, 2px 100%;
+
+  border: 1px solid rgba(47, 53, 66, 0.12);
+  border-radius: 16px 18px 17px 14px;
+  box-shadow:
+    0 14px 24px -16px rgba(0, 0, 0, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Hoja de tarea: margen alejado para dejar sitio a las perforaciones */
+.notebook-paper {
+  background-position: 0 0, 0 12px, 34px 0;
+}
+
+/* Hoja de sección (Planificador): margen cerca del borde, sin perforaciones */
+.notebook-plain {
+  background-position: 0 0, 0 10px, 20px 0;
+}
+
+/* Perforaciones del costado izquierdo */
+.notebook-paper::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 14px;
+  bottom: 14px;
+  width: 16px;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 8px 8px,
+    rgba(47, 53, 66, 0.20) 0 4.5px,
+    rgba(255, 255, 255, 0.85) 4.5px 6px,
+    transparent 6px
+  );
+  background-repeat: repeat-y;
+  background-size: 16px 36px;
+  opacity: 0.6;
+}
+
+/* Cinta adhesiva en la parte superior */
+.notebook-paper::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 66px;
+  height: 17px;
+  transform: translateX(-50%) rotate(-2deg);
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+/* Variantes pastel por estado de la tarea */
+.paper-pending {
+  --paper-bg: #fffbe9;
+  --paper-tint-a: rgba(255, 235, 156, 0.50);
+  --paper-tint-b: rgba(255, 252, 240, 0.92);
+  --paper-accent: #d9a72c;
+}
+
+.paper-progress {
+  --paper-bg: #eef7ff;
+  --paper-tint-a: rgba(166, 214, 255, 0.45);
+  --paper-tint-b: rgba(250, 253, 255, 0.92);
+  --paper-accent: #5c9ed6;
+}
+
+.paper-done {
+  --paper-bg: #eefaf3;
+  --paper-tint-a: rgba(150, 224, 186, 0.45);
+  --paper-tint-b: rgba(250, 255, 252, 0.92);
+  --paper-accent: #46a97a;
+}
+
+.paper-overdue {
+  --paper-bg: #fff0f3;
+  --paper-tint-a: rgba(255, 170, 187, 0.45);
+  --paper-tint-b: rgba(255, 250, 251, 0.92);
+  --paper-accent: #d9647f;
+}
+
+/* Pila de hojas: ligera inclinación "hecha a mano" */
+.paper-stack > .notebook-paper:nth-child(odd) {
+  transform: rotate(-0.35deg);
+}
+
+.paper-stack > .notebook-paper:nth-child(even) {
+  transform: rotate(0.4deg);
+}
+
+.paper-stack > .notebook-paper:hover {
+  transform: translateY(-3px) rotate(0deg);
+  box-shadow:
+    0 22px 34px -18px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+/* Resaltador pastel para etiquetas dentro de la hoja */
+.paper-tag {
+  border-radius: 8px 10px 9px 8px;
+  border: 1px solid rgba(47, 53, 66, 0.12);
+  font-weight: 700;
+}
+
+/* Utilidad usada en las barras de filtros */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================================================
+   ACENTOS POR PALETA PARA EL TEMA PIZARRA
+   --chalk-accent: versión clara (tiza) para leer sobre el verde
+   --ink-accent:   versión oscura (tinta) para leer sobre el papel
+   Se usan porque los pasteles muy claros no se leen sobre papel
+   blanco y los oscuros se pierden sobre la pizarra.
+   ========================================================== */
+
+:root {
+  --chalk-accent: #8ecbff;
+  --ink-accent: #17569b;
+}
+
+[data-palette="0"]  { --chalk-accent: #8ecbff; --ink-accent: #17569b; }
+[data-palette="1"]  { --chalk-accent: #a5e3a8; --ink-accent: #2b6e2f; }
+[data-palette="2"]  { --chalk-accent: #e0b3f5; --ink-accent: #5d1a7a; }
+[data-palette="3"]  { --chalk-accent: #ffb59b; --ink-accent: #b03a12; }
+[data-palette="4"]  { --chalk-accent: #ffa8c6; --ink-accent: #9c1149; }
+[data-palette="5"]  { --chalk-accent: #d6c8f7; --ink-accent: #6c58a0; }
+[data-palette="6"]  { --chalk-accent: #ffd0e2; --ink-accent: #c2578d; }
+[data-palette="7"]  { --chalk-accent: #b6efb9; --ink-accent: #3f8a44; }
+[data-palette="8"]  { --chalk-accent: #a8dcff; --ink-accent: #2c7cc0; }
+[data-palette="9"]  { --chalk-accent: #e9bff5; --ink-accent: #93559f; }
+[data-palette="10"] { --chalk-accent: #ffd2d9; --ink-accent: #c05f70; }
+[data-palette="11"] { --chalk-accent: #bce8fa; --ink-accent: #2f86b3; }
+[data-palette="12"] { --chalk-accent: #ffd6dd; --ink-accent: #c26878; }
+[data-palette="13"] { --chalk-accent: #a6bcff; --ink-accent: #2f4fb5; }
+[data-palette="14"] { --chalk-accent: #e8e8fb; --ink-accent: #6f6f9e; }
+
+/* Sobre el fondo, el color de marca lo define el tono elegido
+   (--board-primary: tiza clara en fondos oscuros, tinta en pasteles).
+   Ver el bloque .app-board y los [data-board="..."] más arriba. */
+
+/* Sobre el papel el color de marca es la tinta oscura */
+.notebook-paper,
+.notebook-plain {
+  --primary: var(--ink-accent, #17569b);
+  --on-primary: #ffffff;
+}
+
+

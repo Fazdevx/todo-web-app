@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { User, ShieldCheck, Mail, LogOut, Sliders, Smartphone, Download, CheckCircle2, Sun, Moon, Monitor, Check } from 'lucide-react';
+import { User, ShieldCheck, Mail, LogOut, Sliders, Smartphone, Download, CheckCircle2, Sun, Moon, Monitor, Check, Circle } from 'lucide-react';
 
 export function SettingsPage() {
   const { user, isAdmin, logout } = useAuth();
-  const { themeMode, palette, density, PALETTES, changeThemeMode, changePalette, changeDensity } = useTheme();
+  const { themeMode, palette, density, board, PALETTES, BOARDS, changeThemeMode, changePalette, changeDensity, changeBoard } = useTheme();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [installed, setInstalled] = useState(false);
 
@@ -102,7 +102,7 @@ export function SettingsPage() {
             <p className="font-bold" style={{ color: 'var(--primary)' }}>¿Cómo instalar manualmente?</p>
             <ul className="list-disc list-inside space-y-1" style={{ color: 'var(--on-surface-variant)' }}>
               <li><strong style={{ color: 'var(--on-surface)' }}>En Android (Chrome/Edge):</strong> Toca los 3 puntos del navegador → <em>"Agregar a la pantalla principal"</em> o <em>"Instalar aplicación"</em>.</li>
-              <li><strong style={{ color: 'var(--on-surface)' }}>En iPhone / iPad (Safari):</strong> Toca el botón <em>Compartir</em> (icono cuadrado con flecha hacia arriba) → <em>"Agregar a inicio"</em>.</li>
+              <li><strong style={{ color: 'var(--on-surface)' }}>En iPhone / iPad (Safari)</strong> Toca el botón <em>Compartir</em> (icono cuadrado con flecha hacia arriba) → <em>"Agregar a inicio"</em>.</li>
               <li><strong style={{ color: 'var(--on-surface)' }}>En PC (Windows/Mac):</strong> Haz clic en el icono de instalación (+) situado a la derecha de la barra de direcciones del navegador.</li>
             </ul>
           </div>
@@ -121,7 +121,9 @@ export function SettingsPage() {
           </div>
           <div>
             <h2 className="text-lg font-bold" style={{ color: 'var(--on-surface)' }}>Personalización de Tema</h2>
-            <p className="text-xs" style={{ color: 'var(--on-surface-variant)' }}>Colores, modo oscuro y estilo de la interfaz</p>
+            <p className="text-xs" style={{ color: 'var(--on-surface-variant)' }}>
+              Ajusta la apariencia visual de la aplicación a tu preferencia
+            </p>
           </div>
         </div>
 
@@ -145,6 +147,7 @@ export function SettingsPage() {
               <Sun className="w-6 h-6" />
               <span className="text-xs font-semibold">Claro</span>
             </button>
+
             <button
               onClick={() => changeThemeMode('dark')}
               className="p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2"
@@ -161,6 +164,7 @@ export function SettingsPage() {
               <Moon className="w-6 h-6" />
               <span className="text-xs font-semibold">Oscuro</span>
             </button>
+
             <button
               onClick={() => changeThemeMode('system')}
               className="p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2"
@@ -180,145 +184,185 @@ export function SettingsPage() {
           </div>
         </div>
 
-        {/* Color Palette */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>Paleta de Colores</h3>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-            {PALETTES.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => changePalette(p.id)}
-                className="relative p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2"
-                style={{ 
-                  backgroundColor: `${p.color}20`,
-                  borderColor: palette === p.id ? p.color : 'var(--outline)'
-                }}
-                title={p.name}
-              >
-                <div 
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
-                  style={{ backgroundColor: p.color }}
+        {/* Palette Selection */}
+        {PALETTES && PALETTES.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>Paleta de Colores</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {PALETTES.map((p) => {
+                const dots = p.colors || (p.color ? [p.color] : []);
+                return (
+                <button
+                  key={p.id}
+                  onClick={() => changePalette(p.id)}
+                  className="p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2"
+                  style={palette === p.id ? {
+                    borderColor: 'var(--primary)',
+                    backgroundColor: 'var(--primary)10',
+                    color: 'var(--primary)'
+                  } : {
+                    borderColor: 'var(--outline)',
+                    backgroundColor: 'var(--surface-variant)',
+                    color: 'var(--on-surface-variant)'
+                  }}
                 >
-                  {p.icon}
-                </div>
-                <span className="text-xs font-medium" style={{ color: 'var(--on-surface)' }}>{p.name}</span>
-                {palette === p.id && (
-                  <div className="absolute top-1 right-1">
-                    <Check className="w-4 h-4 drop-shadow-lg" style={{ color: 'var(--primary)' }} />
+                  <div className="flex items-center gap-1">
+                    {dots?.map((c, i) => (
+                      <span
+                        key={i}
+                        className="w-4 h-4 rounded-full border"
+                        style={{ backgroundColor: c, borderColor: 'var(--outline)' }}
+                      />
+                    ))}
                   </div>
-                )}
-              </button>
-            ))}
+                  <span className="text-xs font-semibold">{p.icon ? `${p.icon} ` : ''}{p.name}</span>
+                  {palette === p.id && <Check className="w-4 h-4" />}
+                </button>
+                );
+              })}
+            </div>
           </div>
-          <p className="text-xs text-center" style={{ color: 'var(--on-surface-variant)' }}>Seleccionado: {PALETTES.find(p => p.id === palette)?.name}</p>
-        </div>
+        )}
 
         {/* Density */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>Densidad de Interfaz</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => changeDensity('comfortable')}
-              className="p-4 rounded-xl border-2 transition-all"
-              style={density === 'comfortable' ? { 
-                borderColor: 'var(--primary)',
-                backgroundColor: 'var(--primary)10',
-                color: 'var(--primary)'
-              } : { 
-                borderColor: 'var(--outline)',
-                backgroundColor: 'var(--surface-variant)',
-                color: 'var(--on-surface-variant)'
-              }}
-            >
-              <span className="text-sm font-semibold">Cómoda</span>
-            </button>
-            <button
-              onClick={() => changeDensity('compact')}
-              className="p-4 rounded-xl border-2 transition-all"
-              style={density === 'compact' ? { 
-                borderColor: 'var(--primary)',
-                backgroundColor: 'var(--primary)10',
-                color: 'var(--primary)'
-              } : { 
-                borderColor: 'var(--outline)',
-                backgroundColor: 'var(--surface-variant)',
-                color: 'var(--on-surface-variant)'
-              }}
-            >
-              <span className="text-sm font-semibold">Compacta</span>
-            </button>
+        {density !== undefined && (
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>Densidad de Interfaz</h3>
+            <div className="grid grid-cols-3 gap-3">
+              {['compact', 'comfortable', 'spacious'].map((d) => (
+                <button
+                  key={d}
+                  onClick={() => changeDensity(d)}
+                  className="p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2"
+                  style={density === d ? {
+                    borderColor: 'var(--primary)',
+                    backgroundColor: 'var(--primary)10',
+                    color: 'var(--primary)'
+                  } : {
+                    borderColor: 'var(--outline)',
+                    backgroundColor: 'var(--surface-variant)',
+                    color: 'var(--on-surface-variant)'
+                  }}
+                >
+                  {density === d ? <Check className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+                  <span className="text-xs font-semibold capitalize">
+                    {d === 'compact' ? 'Compacta' : d === 'comfortable' ? 'Cómoda' : 'Amplia'}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Board / Layout */}
+        {BOARDS && BOARDS.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>Estilo de Tablero</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {BOARDS.map((b) => (
+                <button
+                  key={b.id}
+                  onClick={() => changeBoard(b.id)}
+                  title={`Cambiar fondo a ${b.name} (actual: ${board})`}
+                  className="p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2"
+                  style={board === b.id ? {
+                    borderColor: 'var(--primary)',
+                    backgroundColor: 'var(--primary)10',
+                    color: 'var(--primary)'
+                  } : {
+                    borderColor: 'var(--outline)',
+                    backgroundColor: 'var(--surface-variant)',
+                    color: 'var(--on-surface-variant)'
+                  }}
+                >
+                  <span
+                    className="w-full h-10 rounded-lg border"
+                    style={{ background: b.preview || 'var(--surface-variant)', borderColor: 'var(--outline)' }}
+                    aria-hidden="true"
+                  />
+                  <span className="text-xs font-semibold">{b.icon ? `${b.icon} ` : ''}{b.name}</span>
+                  {board === b.id && <Check className="w-4 h-4" />}
+                </button>
+              ))}
+            </div>
+            <p className="text-[11px]" style={{ color: 'var(--on-surface-variant)' }}>
+              El fondo activo es: <strong style={{ color: 'var(--on-surface)' }}>{board}</strong>. Si no ves el cambio,
+              abre la consola y verifica que <code>&lt;html data-board=&quot;...&quot;&gt;</code> cambie al hacer clic.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* User Profile Card */}
       <div className="glass-panel p-6 sm:p-8 rounded-3xl border space-y-6" style={{ borderColor: 'var(--outline-variant)' }}>
-        <div className="flex items-center gap-4 pb-6 border-b" style={{ borderColor: 'var(--outline-variant)' }}>
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl border" style={{ 
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-2xl border" style={{ 
             backgroundColor: 'var(--primary)10', 
             color: 'var(--primary)',
-            borderColor: 'var(--primary)30'
+            borderColor: 'var(--primary)20'
           }}>
-            {user?.name ? user.name.charAt(0).toUpperCase() : <User className="w-8 h-8" />}
+            <User className="w-6 h-6" />
           </div>
-
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold" style={{ color: 'var(--on-surface)' }}>{user?.name}</h2>
-              {isAdmin ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase tracking-wider" style={{ 
-                  backgroundColor: 'var(--primary)10', 
-                  color: 'var(--primary)',
-                  borderColor: 'var(--primary)20'
-                }}>
-                  <ShieldCheck className="w-3.5 h-3.5" style={{ color: 'var(--primary)' }} /> Administrador
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase tracking-wider" style={{ 
-                  backgroundColor: 'var(--primary)10', 
-                  color: 'var(--primary)',
-                  borderColor: 'var(--primary)20'
-                }}>
-                  <User className="w-3.5 h-3.5" style={{ color: 'var(--primary)' }} /> Docente / Miembro
-                </span>
-              )}
-            </div>
-            <p className="text-sm flex items-center gap-1.5 mt-1" style={{ color: 'var(--on-surface-variant)' }}>
-              <Mail className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} /> {user?.email}
-            </p>
+            <h2 className="text-lg font-bold" style={{ color: 'var(--on-surface)' }}>Perfil de Usuario</h2>
+            <p className="text-xs" style={{ color: 'var(--on-surface-variant)' }}>Información de tu cuenta institucional</p>
           </div>
         </div>
 
-        {/* Roles Details */}
-        <div className="p-4 rounded-2xl border" style={{ 
-          backgroundColor: 'var(--surface-variant)',
-          borderColor: 'var(--outline)'
-        }}>
-          <h3 className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>Permisos de Tu Cuenta en Galileo</h3>
-          <p className="text-xs leading-relaxed mt-1" style={{ color: 'var(--on-surface-variant)' }}>
-            {isAdmin
-              ? 'Como Administrador de Galileo, tienes acceso completo al Panel de Control para supervisar todas las tareas del colegio y academia, filtrar por docente/miembro y gestionar la actividad global.'
-              : 'Como Miembro del equipo Galileo, tienes acceso a tu agenda personal para gestionar tus actividades y entregas académicas.'}
-          </p>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 p-4 rounded-2xl border" style={{
+            backgroundColor: 'var(--surface-variant)',
+            borderColor: 'var(--outline)'
+          }}>
+            <Mail className="w-5 h-5 shrink-0" style={{ color: 'var(--primary)' }} />
+            <div className="min-w-0">
+              <p className="text-xs font-medium" style={{ color: 'var(--on-surface-variant)' }}>Correo electrónico</p>
+              <p className="text-sm font-bold truncate" style={{ color: 'var(--on-surface)' }}>
+                {user?.email || 'No disponible'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 p-4 rounded-2xl border" style={{
+            backgroundColor: 'var(--surface-variant)',
+            borderColor: 'var(--outline)'
+          }}>
+            <ShieldCheck className="w-5 h-5 shrink-0" style={{ color: isAdmin ? '#10b981' : 'var(--on-surface-variant)' }} />
+            <div className="min-w-0">
+              <p className="text-xs font-medium" style={{ color: 'var(--on-surface-variant)' }}>Rol de acceso</p>
+              <p className="text-sm font-bold" style={{ color: 'var(--on-surface)' }}>
+                {isAdmin ? 'Administrador' : 'Usuario estándar'}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Actions */}
-        <div className="pt-2">
-          <button
-            onClick={logout}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-sm border transition-all flex items-center justify-center gap-2"
-            style={{ 
-              backgroundColor: 'rgba(244, 63, 94, 0.05)',
-              borderColor: 'rgba(244, 63, 94, 0.15)',
-              color: '#f43f5e'
-            }}
-            onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(244, 63, 94, 0.1)'; }}
-            onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(244, 63, 94, 0.05)'; }}
-          >
-            <LogOut className="w-4 h-4" /> Cerrar Sesión
-          </button>
-        </div>
+        <button
+          onClick={logout}
+          className="w-full sm:w-auto px-6 py-3 rounded-xl font-extrabold text-sm shadow-lg transition-all flex items-center justify-center gap-2 border-2"
+          style={{
+            backgroundColor: 'transparent',
+            borderColor: 'var(--error, #ef4444)',
+            color: 'var(--error, #ef4444)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--error, #ef4444)';
+            e.currentTarget.style.color = '#fff';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = 'var(--error, #ef4444)';
+          }}
+        >
+          <LogOut className="w-4 h-4" /> Cerrar Sesión
+        </button>
+      </div>
 
+      {/* Footer */}
+      <div className="text-center py-4">
+        <p className="text-xs font-medium" style={{ color: 'var(--on-surface-variant)' }}>
+          Galileo Colegio y Academia &copy; {new Date().getFullYear()} — Todos los derechos reservados.
+        </p>
       </div>
 
     </div>

@@ -44,24 +44,32 @@ function priorityInfo(level) {
   return PRIORITIES[level] || PRIORITIES[1];
 }
 
-// Un panel con el mismo encabezado enmarcado que tiene cada bloque de la hoja.
+// Panel de tiza con una hoja de apuntes dentro, igual que cada bloque de la
+// hoja impresa (FECHA, 3 PRIORIDADES, METAS, HORARIO, IDEAS).
+const SHEET_TONE_BY_SECTION = {
+  fecha: 'paper-progress',
+  prioridades: 'paper-pending',
+  metas: 'paper-done',
+  horario: 'paper-pending',
+  ideas: 'paper-overdue',
+};
+
 function PlannerSection({ id, icon: Icon, count, action, children }) {
   const title = sectionTitle(id);
   const hint = (PLANNER_SECTIONS.find((s) => s.id === id) || {}).hint;
+  const sheetTone = SHEET_TONE_BY_SECTION[id] || 'paper-pending';
+
   return (
-    <section className="glass-card rounded-3xl border overflow-hidden" style={{ borderColor: 'var(--outline-variant)' }}>
-      <header
-        className="flex items-center justify-between gap-3 px-4 py-3 border-b"
-        style={{ borderColor: 'var(--outline-variant)', backgroundColor: 'var(--surface-variant)' }}
-      >
-        <div className="flex items-center gap-2 min-w-0">
-          {Icon && <Icon className="w-4 h-4 shrink-0" style={{ color: 'var(--primary)' }} />}
+    <section className="chalk-panel">
+      <header className="chalk-panel-header flex items-center justify-between gap-3 px-4 py-3">
+        <div className="flex items-center gap-2.5 min-w-0">
+          {Icon && <Icon className="w-5 h-5 shrink-0" style={{ color: 'var(--primary)' }} />}
           <div className="min-w-0">
-            <h2 className="text-[11px] sm:text-xs font-black uppercase tracking-wider truncate" style={{ color: 'var(--on-surface)' }}>
+            <h2 className="chalk-text text-[19px] leading-tight truncate" style={{ color: 'var(--on-surface)' }}>
               {title}
             </h2>
             {hint && (
-              <p className="text-[10px] font-medium truncate" style={{ color: 'var(--on-surface-variant)' }}>
+              <p className="chalk-text text-[14px] truncate" style={{ color: 'var(--on-surface-variant)' }}>
                 {hint}
               </p>
             )}
@@ -70,8 +78,8 @@ function PlannerSection({ id, icon: Icon, count, action, children }) {
         <div className="flex items-center gap-2 shrink-0">
           {typeof count === 'number' && count > 0 && (
             <span
-              className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border"
-              style={{ backgroundColor: 'var(--surface)', color: 'var(--primary)', borderColor: 'var(--outline)' }}
+              className="chalk-pill chalk-text px-2.5 py-0.5 text-[15px]"
+              style={{ color: 'var(--primary)' }}
             >
               {count}
             </span>
@@ -79,7 +87,12 @@ function PlannerSection({ id, icon: Icon, count, action, children }) {
           {action}
         </div>
       </header>
-      <div className="p-3 sm:p-4">{children}</div>
+
+      <div className="p-2.5 sm:p-3">
+        <div className={`notebook-plain ${sheetTone} px-4 sm:px-5 py-3.5 pl-9 sm:pl-10`}>
+          {children}
+        </div>
+      </div>
     </section>
   );
 }
@@ -90,10 +103,10 @@ function AddButton({ onClick, title }) {
       type="button"
       onClick={onClick}
       title={title || 'Agregar'}
-      className="p-1.5 rounded-lg border transition-all"
-      style={{ borderColor: 'var(--outline)', color: 'var(--primary)', backgroundColor: 'var(--surface)' }}
+      className="chalk-pill p-1.5 transition-all"
+      style={{ color: 'var(--primary)' }}
       onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary)'; e.currentTarget.style.color = 'var(--on-primary)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--surface)'; e.currentTarget.style.color = 'var(--primary)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.07)'; e.currentTarget.style.color = 'var(--primary)'; }}
     >
       <Plus className="w-4 h-4" />
     </button>
@@ -134,7 +147,7 @@ function TaskLine({ task, rank, showTime, dense, now, onToggle, onEdit }) {
         title={task.done ? 'Marcar como pendiente' : 'Marcar como cumplida'}
       >
         {task.done
-          ? <CheckCircle2 className="w-4 h-4" style={{ color: '#10b981' }} />
+          ? <CheckCircle2 className="w-4 h-4" style={{ color: '#3f9d76' }} />
           : <Circle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />}
       </button>
 
@@ -172,7 +185,7 @@ function TaskLine({ task, rank, showTime, dense, now, onToggle, onEdit }) {
             </span>
           )}
           {isOverdue && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold" style={{ color: '#f43f5e' }}>
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold" style={{ color: '#b7465f' }}>
               <AlertCircle className="w-3 h-3" /> Vencida
             </span>
           )}
@@ -285,27 +298,21 @@ export function PlannerPage() {
   const goNextDay = () => setPlanDate(addDays(planDate, 1));
   const goToday = () => setPlanDate(startOfDay(Date.now()));
 
-  const headerButtonClass = 'px-3 py-2 rounded-xl text-xs font-bold border transition-all';
+  const headerButtonClass = 'chalk-pill px-3 py-2 text-xs font-bold transition-all';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-5 pb-24">
       {/* Encabezado: marca + navegacion de dias (bloque FECHA de la hoja) */}
-      <div
-        className="glass-panel rounded-3xl border p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-        style={{ borderColor: 'var(--outline)' }}
-      >
+      <div className="chalk-panel px-5 py-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div
-            className="p-3 rounded-2xl border"
-            style={{ backgroundColor: 'var(--primary)10', color: 'var(--primary)', borderColor: 'var(--primary)20' }}
-          >
+          <div className="chalk-pill p-2.5" style={{ color: 'var(--primary)' }}>
             <CalendarClock className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight" style={{ color: 'var(--on-surface)' }}>
+            <h1 className="chalk-title" style={{ color: 'var(--on-surface)', fontSize: '2rem' }}>
               Planificador <span style={{ color: 'var(--primary)' }}>Galileo</span>
             </h1>
-            <p className="text-[11px] sm:text-xs font-medium mt-0.5" style={{ color: 'var(--on-surface-variant)' }}>
+            <p className="chalk-text text-[15px] mt-0.5" style={{ color: 'var(--on-surface-variant)' }}>
               La misma agenda, clasificada en las 5 secciones de la hoja diaria
             </p>
           </div>
@@ -316,7 +323,7 @@ export function PlannerPage() {
             type="button"
             onClick={goPrevDay}
             className={headerButtonClass}
-            style={{ backgroundColor: 'var(--surface-variant)', color: 'var(--on-surface)', borderColor: 'var(--outline)' }}
+            style={{ color: 'var(--on-surface-variant)' }}
             title="Día anterior"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -326,8 +333,8 @@ export function PlannerPage() {
             onClick={goToday}
             className={`${headerButtonClass} inline-flex items-center gap-1.5`}
             style={isToday
-              ? { backgroundColor: 'var(--primary)', color: 'var(--on-primary)', borderColor: 'var(--primary)' }
-              : { backgroundColor: 'var(--surface-variant)', color: 'var(--on-surface)', borderColor: 'var(--outline)' }}
+              ? { backgroundColor: 'var(--primary)', color: 'var(--on-primary)', borderColor: 'transparent' }
+              : { color: 'var(--on-surface-variant)' }}
           >
             <Check className="w-3.5 h-3.5" /> Hoy
           </button>
@@ -335,7 +342,7 @@ export function PlannerPage() {
             type="button"
             onClick={goNextDay}
             className={headerButtonClass}
-            style={{ backgroundColor: 'var(--surface-variant)', color: 'var(--on-surface)', borderColor: 'var(--outline)' }}
+            style={{ color: 'var(--on-surface-variant)' }}
             title="Día siguiente"
           >
             <ChevronRight className="w-4 h-4" />
@@ -343,8 +350,8 @@ export function PlannerPage() {
           <button
             type="button"
             onClick={() => openNewTaskModal({ dueAt: dayAt(planDate, 12, 0) })}
-            className="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg transition-all inline-flex items-center gap-1.5"
-            style={{ background: 'var(--primary)' }}
+            className="px-4 py-2 text-xs font-bold transition-all inline-flex items-center gap-1.5 hover:scale-105"
+            style={{ background: 'var(--primary)', color: 'var(--on-primary)', borderRadius: '14px' }}
           >
             <Plus className="w-4 h-4" /> Nueva tarea
           </button>
@@ -356,22 +363,22 @@ export function PlannerPage() {
         <button
           type="button"
           onClick={() => { setFilter('Vencidas'); setActiveTab('agenda'); }}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border text-left transition-all"
-          style={{ backgroundColor: 'rgba(244, 63, 94, 0.06)', borderColor: 'rgba(244, 63, 94, 0.25)' }}
+          className="chalk-panel w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:scale-[1.01]"
+          style={{ borderColor: 'rgba(255, 170, 187, 0.45)' }}
         >
-          <AlertCircle className="w-5 h-5 shrink-0" style={{ color: '#f43f5e' }} />
-          <span className="text-xs font-semibold flex-1" style={{ color: 'var(--on-surface)' }}>
+          <AlertCircle className="w-5 h-5 shrink-0" style={{ color: '#ffb3c4' }} />
+          <span className="chalk-text text-[15px] flex-1" style={{ color: 'var(--on-surface)' }}>
             Tienes {plan.overdue.length} {plan.overdue.length === 1 ? 'tarea vencida' : 'tareas vencidas'} de días
             anteriores. Esta hoja solo muestra lo programado para la fecha elegida.
           </span>
-          <span className="text-[11px] font-bold shrink-0" style={{ color: '#f43f5e' }}>Ver vencidas</span>
+          <span className="chalk-text text-[15px] shrink-0" style={{ color: '#ffb3c4' }}>Ver vencidas</span>
         </button>
       )}
 
       {error && (
         <div
-          className="p-3 rounded-2xl border text-xs font-medium"
-          style={{ backgroundColor: 'rgba(244, 63, 94, 0.05)', borderColor: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e' }}
+          className="chalk-panel px-4 py-3 text-xs font-semibold"
+          style={{ borderColor: 'rgba(255, 170, 187, 0.45)', color: '#ffb3c4' }}
         >
           {error}
         </div>
@@ -385,7 +392,7 @@ export function PlannerPage() {
             <div className="space-y-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-base sm:text-lg font-extrabold leading-tight" style={{ color: 'var(--on-surface)' }}>
+                  <p className="chalk-text text-[26px] leading-tight" style={{ color: 'var(--on-surface)' }}>
                     {formatLongDate(planDate)}
                   </p>
                   <p className="text-[11px] font-semibold mt-1" style={{ color: 'var(--on-surface-variant)' }}>
@@ -394,8 +401,8 @@ export function PlannerPage() {
                 </div>
                 {relative && (
                   <span
-                    className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border shrink-0"
-                    style={{ backgroundColor: 'var(--primary)10', color: 'var(--primary)', borderColor: 'var(--primary)20' }}
+                    className="paper-tag text-[10px] font-black uppercase tracking-wider px-2.5 py-1 shrink-0"
+                    style={{ backgroundColor: 'rgba(47, 53, 66, 0.08)', color: 'var(--on-surface)', borderColor: 'rgba(47, 53, 66, 0.16)' }}
                   >
                     {relative}
                   </span>
@@ -417,10 +424,10 @@ export function PlannerPage() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-xl border py-2"
-                    style={{ backgroundColor: 'var(--surface-variant)', borderColor: 'var(--outline-variant)' }}
+                    className="paper-tag py-2"
+                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.55)', borderColor: 'rgba(47, 53, 66, 0.14)' }}
                   >
-                    <p className="text-sm font-extrabold" style={{ color: 'var(--on-surface)' }}>{item.value}</p>
+                    <p className="chalk-text text-[20px] leading-none" style={{ color: 'var(--on-surface)' }}>{item.value}</p>
                     <p className="text-[10px] font-semibold" style={{ color: 'var(--on-surface-variant)' }}>{item.label}</p>
                   </div>
                 ))}
@@ -527,7 +534,7 @@ export function PlannerPage() {
                   <div
                     key={row.hour}
                     className="flex items-stretch gap-2 rounded-xl px-1.5"
-                    style={isCurrentHour ? { backgroundColor: 'var(--primary)10' } : undefined}
+                    style={isCurrentHour ? { backgroundColor: 'rgba(255, 235, 156, 0.6)' } : undefined}
                   >
                     <div className="w-14 shrink-0 pt-2.5">
                       <span
@@ -619,14 +626,14 @@ export function PlannerPage() {
                   }
                 }}
                 placeholder="Escribe una idea, pendiente o preocupación..."
-                className="flex-1 min-w-0 px-3.5 py-2 rounded-xl text-sm focus:outline-none border"
-                style={{ backgroundColor: 'var(--surface-variant)', borderColor: 'var(--outline)', color: 'var(--on-surface)' }}
+                className="chalk-text flex-1 min-w-0 px-1.5 py-1 text-[19px] bg-transparent border-b border-dashed focus:outline-none"
+                style={{ borderColor: 'var(--outline)', color: 'var(--on-surface)' }}
               />
               <button
                 type="button"
                 onClick={handleAddNote}
-                className="p-2 rounded-xl text-white shrink-0"
-                style={{ background: 'var(--primary)' }}
+                className="p-2 shrink-0 transition-transform hover:scale-105"
+                style={{ background: 'var(--primary)', color: 'var(--on-primary)', borderRadius: '12px' }}
                 title="Anotar en la hoja"
               >
                 <Plus className="w-4 h-4" />

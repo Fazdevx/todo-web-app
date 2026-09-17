@@ -219,7 +219,7 @@ export function TaskModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md overflow-y-auto" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
       <div className="relative w-full max-w-xl rounded-3xl p-6 sm:p-8 border shadow-2xl animate-in fade-in zoom-in duration-200" style={{ 
-        backgroundColor: 'var(--surface)',
+        backgroundColor: 'var(--board-panel, var(--surface))',
         borderColor: 'var(--outline)'
       }}>
 

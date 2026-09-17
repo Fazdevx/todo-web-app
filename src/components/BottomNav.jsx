@@ -19,9 +19,8 @@ export function BottomNav() {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur-xl px-1.5 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-2xl" style={{
-      borderColor: 'var(--outline-variant)',
-      backgroundColor: 'var(--surface)'
+    <div className="board-bottombar md:hidden fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur-xl px-1.5 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-2xl" style={{
+      borderColor: 'rgba(238, 244, 240, 0.32)'
     }}>
       <div className="flex items-center justify-between gap-0.5">
         {tabs.map((tab) => {

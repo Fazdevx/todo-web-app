@@ -20,5 +20,27 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 5173,
     strictPort: true,
+    hmr: {
+      // Mismo host/puerto que el servidor: evita que el cliente de HMR intente
+      // un hostname distinto (IPv6 o un dominio de red) y falle el WebSocket.
+      protocol: 'ws',
+      host: '127.0.0.1',
+      port: 5173,
+    },
+  },
+  optimizeDeps: {
+    // Pre-optimizar React y las librerías grandes desde el arranque. Cuando Vite
+    // descubre una dependencia nueva a mitad de sesión, re-optimiza y recarga la
+    // página: si el navegador tenia modulos del bundle anterior, puede quedar con
+    // DOS copias de React y aparecer errores como
+    // "useTasks must be used within a TaskProvider" aunque el Provider exista.
+    include: [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+      'lucide-react',
+    ],
   },
 });
